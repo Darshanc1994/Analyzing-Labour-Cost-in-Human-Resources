@@ -1,0 +1,19 @@
+CREATE VIEW current_salaries AS
+SELECT emp_no, salary
+FROM salaries
+WHERE to_date > CURDATE();
+
+CREATE VIEW current_dept_employee AS
+SELECT emp_no, dept_no
+FROM `dept_emp`
+WHERE to_date > CURDATE();
+
+SELECT departments.dept_no,
+ departments.dept_name,
+ sum(current_salaries.salary) as total_salaries
+FROM `current_salaries`
+INNER JOIN current_dept_employee
+ON current_salaries.emp_no = current_dept_employee.emp_no
+JOIN departments
+ON departments.dept_no = current_dept_employee.dept_no
+GROUP BY departments.dept_no, departments.dept_name;
